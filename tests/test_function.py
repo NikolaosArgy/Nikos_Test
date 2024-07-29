@@ -11,7 +11,6 @@ from speckle_automate import (
 
 from main import FunctionInputs, automate_function
 
-from speckle_automate.fixtures import *
 
 
 def test_function_run(test_automation_run_data: AutomationRunData, test_automation_token: str):
@@ -24,6 +23,7 @@ def test_function_run(test_automation_run_data: AutomationRunData, test_automati
         automate_function,
         FunctionInputs(
             forbidden_speckle_type="None",
+            forbidden_category="None",
             whisper_message=SecretStr("testing automatically"),
         ),
     )

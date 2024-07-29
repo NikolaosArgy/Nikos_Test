@@ -30,6 +30,13 @@ class FunctionInputs(AutomateBase):
             " it will be marked with an error."
         ),
     )
+    forbidden_category: str = Field(
+        title="Forbidden Category",
+        description=(
+            "If a object has the following category,"
+            " it will be marked with an error."
+        ),
+    )
 
 
 def automate_function(
@@ -48,26 +55,36 @@ def automate_function(
     # the context provides a conveniet way, to receive the triggering version
     version_root_object = automate_context.receive_version()
 
-    objects_with_forbidden_speckle_type = [
+    objects_with_forbidden_parameters = [
         b
         for b in flatten_base(version_root_object)
         if b.speckle_type == function_inputs.forbidden_speckle_type
+        if b.category == function_inputs.forbidden_category
     ]
-    count = len(objects_with_forbidden_speckle_type)
+
+    count = len(objects_with_forbidden_parameters)
 
     if count > 0:
         # this is how a run is marked with a failure cause
         automate_context.attach_error_to_objects(
             category="Forbidden speckle_type"
             f" ({function_inputs.forbidden_speckle_type})",
-            object_ids=[o.id for o in objects_with_forbidden_speckle_type if o.id],
+            object_ids=[o.id for o in objects_with_forbidden_parameters if o.id],
             message="This project should not contain the type: "
             f"{function_inputs.forbidden_speckle_type}",
         )
+        automate_context.attach_error_to_objects(
+            category="Forbidden Category"
+            f" ({function_inputs.forbidden_category})",
+            object_ids=[o.id for o in objects_with_forbidden_parameters if o.id],
+            message="This project should not contain the type: "
+            f"{function_inputs.forbidden_category}",
+        )
         automate_context.mark_run_failed(
             "Automation failed: "
-            f"Found {count} object that have one of the forbidden speckle types: "
+            f"Found {count} object that have one of the forbidden parameters: "
             f"{function_inputs.forbidden_speckle_type}"
+            f"{function_inputs.forbidden_category}"
         )
 
         # set the automation context view, to the original model / version view
