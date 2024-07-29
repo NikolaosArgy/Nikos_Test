@@ -2,8 +2,7 @@
   "speckleToken": "YOUR SPEKCLE TOKEN",
   "functionInputs": {
     "whisperMessage": "you are doing something weird",
-    "forbiddenSpeckleType": "wall",
-    "forbiddenCategory": "Wall"
+    "forbiddenSpeckleType": "wall"
   },
   "automationRunData": {
     "project_id": "project id",
